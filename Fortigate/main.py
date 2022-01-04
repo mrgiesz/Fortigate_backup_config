@@ -8,6 +8,7 @@ import urllib3
 # disable ssl warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
 def get_data_from_fortigate(name, ip, port, api_key):
     api_url = 'https://' + str(ip) + ':' + str(
         port) + '/api/v2/monitor/system/config/backup/?scope=global&access_token=' + api_key
