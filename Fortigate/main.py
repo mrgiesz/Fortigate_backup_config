@@ -20,9 +20,10 @@ def get_data_from_fortigate(name, ip, port, api_key):
             print(f'Received config from {name}')
             timestr = time.strftime("%Y-%m-%d-%H%M%S")
             # creating subdirectory
-            Path(name).mkdir(exist_ok=True)
+            Path('Customers').mkdir(exist_ok=True)
+            Path('Customers/'+name).mkdir(exist_ok=True)
             # Writing output do file
-            open(f'{name}/{timestr}_{name}_config.txt', 'wb').write(response.content)
+            open(f'Customers/{name}/{timestr}_{name}_config.txt', 'wb').write(response.content)
         else:
             raise ConnectionError(f"Status code was not 200 but : {response.status_code}")
     except requests.exceptions.HTTPError as errh:
