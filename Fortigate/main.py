@@ -8,11 +8,10 @@ import urllib3
 # disable ssl warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
 def get_data_from_fortigate(name, ip, port, api_key):
     api_url = 'https://' + str(ip) + ':' + str(
         port) + '/api/v2/monitor/system/config/backup/?scope=global&access_token=' + api_key
-    print(f'requesting config from {name}')
+    print(f'Requesting config from {name}')
 
     try:
         response = requests.get(api_url, verify=False)
@@ -38,7 +37,7 @@ def get_data_from_fortigate(name, ip, port, api_key):
 if __name__ == '__main__':
 
     # Reading excel, and creating device list
-    df = pd.read_excel('customerlist.xlsx')
+    df = pd.read_excel('fortigate-list.xlsx')
 
     # loop through excel file, and send data to function.
     for row in df.itertuples():
