@@ -10,19 +10,20 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_data_from_fortigate(name, ip, port, api_key):
+    # building url from variables
     api_url = 'https://' + str(ip) + ':' + str(
         port) + '/api/v2/monitor/system/config/backup/?scope=global&access_token=' + api_key
     print(f'Requesting config from {name}')
 
     try:
+        # Requesting data from the Fortigate
         response = requests.get(api_url, verify=False)
         if response.status_code == 200:
             print(f'Received config from {name}')
             timestr = time.strftime("%Y-%m-%d-%H%M%S")
             # creating subdirectory
-            Path('Customers').mkdir(exist_ok=True)
-            Path('Customers/'+name).mkdir(exist_ok=True)
-            # Writing output do file
+            Path('Customers/'+name).mkdir(parents=True, exist_ok=True)
+            # Writing received config file too a file
             open(f'Customers/{name}/{timestr}_{name}_config.txt', 'wb').write(response.content)
         else:
             raise ConnectionError(f"Status code was not 200 but : {response.status_code}")
