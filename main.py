@@ -11,8 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def build_url(ip, port, api_key):
     # building url from variables
-    api_url = 'https://' + str(ip) + ':' + str(
-        port) + '/api/v2/monitor/system/config/backup/?scope=global&access_token=' + api_key
+    api_url = f"https://{ip}:{port}/api/v2/monitor/system/config/backup/?scope=global&access_token={api_key}"
     return api_url
 
 
@@ -27,6 +26,7 @@ def write_data(config, name):
 
 def get_data_from_fortigate(name, api_url):
     print(f'Requesting config from {name}')
+    print(api_url)
     try:
         # Requesting data from the Fortigate
         response = requests.get(api_url, verify=False)
