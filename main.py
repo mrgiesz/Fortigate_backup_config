@@ -34,6 +34,7 @@ def get_data_from_fortigate(name, api_url):
             print(f'Received config from {name}')
         else:
             raise ConnectionError(f"Status code was not 200 but : {response.status_code}")
+        return response.content
     except requests.exceptions.HTTPError as errh:
         print(f'A Http Error with {name}', errh)
     except requests.exceptions.ConnectionError as errc:
@@ -42,7 +43,6 @@ def get_data_from_fortigate(name, api_url):
         print(f'Timeout Error occurred with {name}', errt)
     except requests.exceptions.RequestException as err:
         print(f'Something Else occurred with {name}', err)
-    return response.content
 
 
 if __name__ == '__main__':
