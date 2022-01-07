@@ -9,22 +9,29 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def get_data_from_fortigate(name, ip, port, api_key):
+def build_url(ip, port, api_key):
     # building url from variables
     api_url = 'https://' + str(ip) + ':' + str(
         port) + '/api/v2/monitor/system/config/backup/?scope=global&access_token=' + api_key
-    print(f'Requesting config from {name}')
+    return api_url
 
+
+def write_data(config, name):
+    timestr = time.strftime("%Y-%m-%d-%H%M%S")
+    # creating subdirectory
+    Path('Customers/' + name).mkdir(parents=True, exist_ok=True)
+    # Writing received config file too a file
+    open(f'Customers/{name}/{timestr}_{name}_config.txt', 'wb').write(config)
+    print(f'Stored config from {name}')
+
+
+def get_data_from_fortigate(name, api_url):
+    print(f'Requesting config from {name}')
     try:
         # Requesting data from the Fortigate
         response = requests.get(api_url, verify=False)
         if response.status_code == 200:
             print(f'Received config from {name}')
-            timestr = time.strftime("%Y-%m-%d-%H%M%S")
-            # creating subdirectory
-            Path('Customers/'+name).mkdir(parents=True, exist_ok=True)
-            # Writing received config file too a file
-            open(f'Customers/{name}/{timestr}_{name}_config.txt', 'wb').write(response.content)
         else:
             raise ConnectionError(f"Status code was not 200 but : {response.status_code}")
     except requests.exceptions.HTTPError as errh:
@@ -35,6 +42,7 @@ def get_data_from_fortigate(name, ip, port, api_key):
         print(f'Timeout Error occurred with {name}', errt)
     except requests.exceptions.RequestException as err:
         print(f'Something Else occurred with {name}', err)
+    return response.content
 
 
 if __name__ == '__main__':
@@ -44,4 +52,12 @@ if __name__ == '__main__':
 
     # loop through excel file, and send data to function.
     for row in df.itertuples():
-        get_data_from_fortigate(row.Name, row.IP, row.Port, row.Api_Key)
+        # creating api url
+        api_url = build_url(row.IP, row.Port, row.Api_Key)
+        # requesting config from Fortigate
+        config = get_data_from_fortigate(row.Name, api_url)
+        # Writing data to file
+        if config:
+            write_data(config, row.Name)
+        else:
+            print(f'No data received rom {row.Name}')
