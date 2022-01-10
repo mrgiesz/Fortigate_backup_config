@@ -15,7 +15,7 @@ def excel_to_df(filename):
     return df
 
 
-def build_api_url(ip, port, api_key):
+def build_api_url(ip, port, api_key) -> str:
     # building url from variables
     built_api_url = f"https://{ip}:{port}/api/v2/monitor/system/config/backup/?scope=global&access_token={api_key}"
     return built_api_url
