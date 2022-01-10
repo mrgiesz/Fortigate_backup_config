@@ -50,13 +50,7 @@ def get_data_from_fortigate(name, generated_api_url):
         print(f'Something Else occurred with {name}', err)
 
 
-def main():
-    # Excel file name with fortigate info
-    filename = 'fortigate-list.xlsx'
-
-    # requesting dataframe
-    df = read_excel(filename)
-
+def loop_through_dataframe(df):
     # loop through dataframe, and send data to functions.
     for row in df.itertuples():
         # creating api url
@@ -68,6 +62,17 @@ def main():
             write_data(config, row.Name)
         else:
             print(f'No data received rom {row.Name}')
+
+
+def main():
+    # Excel file name with fortigate info
+    filename = 'fortigate-list.xlsx'
+
+    # requesting dataframe
+    df = read_excel(filename)
+
+    # loop through dataframe, and send data to functions.
+    loop_through_dataframe(df)
 
 
 if __name__ == '__main__':
