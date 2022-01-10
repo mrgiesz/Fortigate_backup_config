@@ -68,7 +68,7 @@ def main():
     # Excel file name with fortigate info
     filename = 'fortigate-list.xlsx'
 
-    # requesting dataframe
+    # generating dataframe from excel file
     df = read_excel(filename)
 
     # loop through dataframe, request en write config for each fortigate.
