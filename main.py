@@ -43,9 +43,7 @@ def get_data_from_fortigate(name, generated_api_url):
     except requests.exceptions.RequestException as err:
         print(f'Something Else occurred with {name}', err)
 
-
-if __name__ == '__main__':
-
+def main():
     # Reading excel, and creating device list
     df = pd.read_excel('fortigate-list.xlsx')
 
@@ -60,3 +58,7 @@ if __name__ == '__main__':
             write_data(config, row.Name)
         else:
             print(f'No data received rom {row.Name}')
+
+
+if __name__ == '__main__':
+    main()
