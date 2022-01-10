@@ -71,7 +71,7 @@ def main():
     # requesting dataframe
     df = read_excel(filename)
 
-    # loop through dataframe, and send data to functions.
+    # loop through dataframe, request en write config for each fortigate.
     loop_through_dataframe(df)
 
 
