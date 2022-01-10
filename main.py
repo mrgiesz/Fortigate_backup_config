@@ -1,4 +1,4 @@
-# Python Fortigate config grabber
+# Python fortigate config grabber
 from pathlib import Path
 import pandas as pd
 import requests
@@ -23,8 +23,10 @@ def build_url(ip, port, api_key):
 
 def write_data(received_config, name):
     timestr = time.strftime("%Y-%m-%d-%H%M%S")
+
     # creating subdirectory
     Path('Customers/' + name).mkdir(parents=True, exist_ok=True)
+
     # Writing received config file too a file
     open(f'Customers/{name}/{timestr}_{name}_config.txt', 'wb').write(received_config)
     print(f'Stored config from {name}')
@@ -33,13 +35,14 @@ def write_data(received_config, name):
 def get_data_from_fortigate(name, generated_api_url):
     print(f'Requesting config from {name}')
     try:
-        # Requesting data from the Fortigate
+        # Requesting data from the fortigate
         response = requests.get(generated_api_url, verify=False)
         if response.status_code == 200:
             print(f'Received config from {name}')
         else:
             raise ConnectionError(f"Status code was not 200 but : {response.status_code}")
         return response.content
+
     except requests.exceptions.HTTPError as errh:
         print(f'A Http Error with {name}', errh)
     except requests.exceptions.ConnectionError as errc:
@@ -51,12 +54,14 @@ def get_data_from_fortigate(name, generated_api_url):
 
 
 def loop_through_dataframe(df):
-    # loop through dataframe, and send data to functions.
+    # loop through dataframe to get info for each fortigate
     for row in df.itertuples():
         # creating api url
         api_url = build_url(row.IP, row.Port, row.Api_Key)
-        # requesting config from Fortigate
+
+        # requesting config from fortigate
         config = get_data_from_fortigate(row.Name, api_url)
+
         # Writing data to file
         if config:
             write_data(config, row.Name)
