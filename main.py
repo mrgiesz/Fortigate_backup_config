@@ -9,19 +9,19 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def read_excel(filename):
+def excel_to_df(filename):
     # Reading excel file, and creating dataframe
     df = pd.read_excel(filename)
     return df
 
 
-def build_url(ip, port, api_key):
+def build_api_url(ip, port, api_key):
     # building url from variables
     built_api_url = f"https://{ip}:{port}/api/v2/monitor/system/config/backup/?scope=global&access_token={api_key}"
     return built_api_url
 
 
-def write_data(received_config, name):
+def write_config_to_file(received_config, name):
     timestr = time.strftime("%Y-%m-%d-%H%M%S")
 
     # creating subdirectory
@@ -32,7 +32,7 @@ def write_data(received_config, name):
     print(f'Stored config from {name}')
 
 
-def get_data_from_fortigate(name, generated_api_url):
+def download_config_from_fortigate(name, generated_api_url):
     print(f'Requesting config from {name}')
     try:
         # Requesting data from the fortigate
@@ -57,14 +57,14 @@ def loop_through_dataframe(df):
     # loop through dataframe to get info for each fortigate
     for row in df.itertuples():
         # creating api url
-        api_url = build_url(row.IP, row.Port, row.Api_Key)
+        api_url = build_api_url(row.IP, row.Port, row.Api_Key)
 
         # requesting config from fortigate
-        config = get_data_from_fortigate(row.Name, api_url)
+        config = download_config_from_fortigate(row.Name, api_url)
 
         # Writing data to file
         if config:
-            write_data(config, row.Name)
+            write_config_to_file(config, row.Name)
         else:
             print(f'No data received rom {row.Name}')
 
@@ -74,7 +74,7 @@ def main():
     filename = 'fortigate-list.xlsx'
 
     # generating dataframe from excel file
-    df = read_excel(filename)
+    df = excel_to_df(filename)
 
     # loop through dataframe, request en write config for each fortigate.
     loop_through_dataframe(df)
