@@ -43,11 +43,19 @@ def get_data_from_fortigate(name, generated_api_url):
     except requests.exceptions.RequestException as err:
         print(f'Something Else occurred with {name}', err)
 
-def main():
-    # Reading excel, and creating device list
-    df = pd.read_excel('fortigate-list.xlsx')
+def read_excel(filename):
+    # Reading excel file, and creating dataframe
+    df = pd.read_excel(filename)
+    return df
 
-    # loop through excel file, and send data to function.
+def main():
+    # Excel file name with fortigate info
+    filename = 'fortigate-list.xlsx'
+
+    # requesting dataframe
+    df = read_excel(filename)
+
+    # loop through dataframe, and send data to functions.
     for row in df.itertuples():
         # creating api url
         api_url = build_url(row.IP, row.Port, row.Api_Key)
