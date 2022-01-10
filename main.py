@@ -9,6 +9,12 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+def read_excel(filename):
+    # Reading excel file, and creating dataframe
+    df = pd.read_excel(filename)
+    return df
+
+
 def build_url(ip, port, api_key):
     # building url from variables
     built_api_url = f"https://{ip}:{port}/api/v2/monitor/system/config/backup/?scope=global&access_token={api_key}"
@@ -43,10 +49,6 @@ def get_data_from_fortigate(name, generated_api_url):
     except requests.exceptions.RequestException as err:
         print(f'Something Else occurred with {name}', err)
 
-def read_excel(filename):
-    # Reading excel file, and creating dataframe
-    df = pd.read_excel(filename)
-    return df
 
 def main():
     # Excel file name with fortigate info
